@@ -8,43 +8,24 @@
     </style>
 </head>
 <body>
+<button style="float: right" onclick="generate()">Generate</button>
+<button style="float: right" onclick="printResults()">Print results</button>
 <script src="js/three.js"></script>
 <script src="js/stats.js"></script>
 <script>
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-
-    const renderer = new THREE.WebGLRenderer();
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    document.body.appendChild( renderer.domElement );
-
-    const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-    const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-    const cube = new THREE.Mesh( geometry, material );
-    scene.add( cube );
-
-    camera.position.z = 5;
-
-    function animate() {
-        requestAnimationFrame( animate );
-
-        cube.rotation.x += 0.01;
-        cube.rotation.y += 0.01;
-
-        renderer.render( scene, camera );
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    animate();
-
     var stats = new Stats();
-    stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
-    document.body.appendChild( stats.dom );
-
+    // stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+    // document.body.appendChild( stats.dom );
+    //
     function animateStats() {
 
         stats.begin();
 
-        // monitored code goes here
+
 
         stats.end();
 
@@ -53,6 +34,52 @@
     }
 
     requestAnimationFrame( animateStats );
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera( 75, 1, 0.1, 1000 );
+
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize( 800, 800 );
+    document.body.appendChild( renderer.domElement );
+
+    const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+    const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+    const cube = new THREE.Mesh( geometry, material );
+
+    function animate() {
+        requestAnimationFrame(animate);
+
+        cube.rotation.x += 0.01;
+        cube.rotation.y += 0.01;
+
+        renderer.render(scene, camera);
+    }
+
+    let results = [];
+
+    async function generate() {
+        let j;
+        for (let i = 0; i < 100; i++) {
+            j = 0
+            for (; j < 50; j++) {
+                scene.add(cube);
+                camera.position.z = 2;
+                animate();
+            }
+            await sleep(200)
+
+            results[i] = i * j + " " + stats.getFPS()
+        }
+        console.log("done")
+    }
+
+    function printResults() {
+        for (let i = 0; i< results.length; i++) {
+            document.body.innerHTML += results[i] + "<br>"
+        }
+    }
+
+
 </script>
 </body>
 </html>
