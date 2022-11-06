@@ -59,18 +59,19 @@
 
     async function generate() {
         let j;
-        for (let i = 0; i < 100; i++) {
+        for (let i = 0; i < 201; i++) {
             j = 0
             for (; j < 50; j++) {
                 scene.add(cube);
-                camera.position.z = 2;
+                camera.position.z = 1.5;
                 animate();
             }
-            await sleep(200)
+            await sleep(1000)
 
-            results[i] = i * j + " " + stats.getFPS()
+            results[i] = stats.getFPS()
         }
-        console.log("done")
+        document.body.removeChild(renderer.domElement)
+        printResults()
     }
 
     function printResults() {
